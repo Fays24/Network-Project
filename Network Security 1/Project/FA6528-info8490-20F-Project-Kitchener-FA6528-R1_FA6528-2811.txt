@@ -1,0 +1,136 @@
+!
+version 12.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Kitchener-FA6528-R1
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login Kitchener-rad group radius local 
+!
+!
+aaa authorization exec default group radius local
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA6528 password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name FA6528
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 10.150.126.25 255.255.255.240
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/0.10
+ encapsulation dot1Q 10
+ ip address 10.150.126.43 255.255.255.240
+!
+interface FastEthernet0/0.20
+ encapsulation dot1Q 20
+ ip address 10.150.126.60 255.255.255.240
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/0/0
+ ip address 10.150.126.169 255.255.255.240
+ clock rate 2000000
+!
+interface Serial0/0/1
+ no ip address
+ clock rate 2000000
+ shutdown
+!
+interface FastEthernet1/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 2.2.2.2
+ log-adjacency-changes
+ network 10.150.126.160 0.0.0.15 area 0
+ network 10.150.126.16 0.0.0.15 area 0
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd 
+This is the motd for Kitchener-FA6528-R1 
+!
+radius-server host 10.150.126.59 auth-port 1645 key Kitchener-rad
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login authentication Kitchener-rad
+ transport input ssh
+line vty 5 15
+ password 7 0812494D1B1C114247
+ logging synchronous
+ transport input ssh
+!
+!
+!
+end
+

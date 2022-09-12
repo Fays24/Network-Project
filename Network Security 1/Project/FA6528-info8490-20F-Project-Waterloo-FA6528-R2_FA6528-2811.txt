@@ -1,0 +1,136 @@
+!
+version 12.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Waterloo-FA6528-R2
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+aaa new-model
+!
+aaa authentication login Waterloo-tac group tacacs+ local 
+!
+!
+aaa authorization exec default group tacacs+ local
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA6528 password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name FA6528
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+key chain eigrp-key
+ key 1
+  key-string Secret55
+!
+interface Loopback1
+ ip address 2.2.2.2 255.255.255.240
+!
+interface FastEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/2/0
+ ip address 10.150.126.202 255.255.255.240
+ ip authentication mode eigrp 1 md5
+ ip authentication key-chain eigrp 1 eigrp-key
+ clock rate 2000000
+!
+interface Serial0/2/1
+ ip address 10.150.126.186 255.255.255.240
+ ip authentication mode eigrp 1 md5
+ ip authentication key-chain eigrp 1 eigrp-key
+!
+interface FastEthernet1/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router eigrp 1
+ network 10.150.126.192 0.0.0.15
+ network 10.150.126.176 0.0.0.15
+ no auto-summary
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd 
+This is the motd for Waterloo-FA6528-R2 
+!
+tacacs-server host 10.150.126.5 key Secret55
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+!
+line aux 0
+!
+line vty 0 4
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login authentication Waterloo-tac
+ transport input ssh
+line vty 5 15
+ password 7 0812494D1B1C114247
+ logging synchronous
+ transport input ssh
+!
+!
+!
+end
+

@@ -1,0 +1,169 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname ZBF_R_FA6528
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA6528 password 7 0812494D1B1C114247
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017D72T-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name FA6528
+!
+!
+spanning-tree mode pvst
+!
+class-map type inspect match-any ALL_PROTCOLS_FA6528
+ match protocol tcp
+ match protocol udp
+ match protocol dns
+ match protocol icmp
+class-map type inspect match-any GUEST_PROTCOLS_FA6528
+ match protocol http
+ match protocol https
+ match protocol ftp
+class-map type inspect match-all ALL_PROTOCOLS_FA6528
+class-map type inspect match-any GUEST_DNS_FA6528
+ match protocol dns
+!
+policy-map type inspect TRUSTED_TO_DMZ_FA6528
+ class type inspect ALL_PROTOCOLS_FA6528
+  inspect
+ class type inspect ALL_PROTCOLS_FA6528
+  inspect
+!
+policy-map type inspect GUEST_TO_INTERNET_FA6528
+ class type inspect GUEST_PROTCOLS_FA6528
+  inspect
+!
+policy-map type inspect TRUSTED_TO_INTERNET_FA6528
+ class type inspect ALL_PROTOCOLS_FA6528
+  inspect
+ class type inspect ALL_PROTCOLS_FA6528
+  inspect
+!
+policy-map type inspect GUEST_TO_DMZ_FA6528
+ class type inspect GUEST_DNS_FA6528
+  inspect
+!
+policy-map type inspect TRUSTED_FA6528
+ class type inspect class-default
+  pass
+!
+!
+!
+zone security Trusted_FA6528
+zone security Guest_FA6528
+zone security DMZ_FA6528
+zone security Internet_FA6528
+zone-pair security Trusted->DMZ_FA6528 source Trusted_FA6528 destination DMZ_FA6528
+ service-policy type inspect TRUSTED_TO_DMZ_FA6528
+zone-pair security Trusted->Internet_FA6528 source Trusted_FA6528 destination Internet_FA6528
+ service-policy type inspect TRUSTED_TO_INTERNET_FA6528
+zone-pair security Guest->Internet_FA6528 source Guest_FA6528 destination Internet_FA6528
+ service-policy type inspect GUEST_TO_INTERNET_FA6528
+zone-pair security Guest->DMZ_FA6528 source Guest_FA6528 destination DMZ_FA6528
+ service-policy type inspect GUEST_TO_DMZ_FA6528
+!
+!
+interface FastEthernet0/0
+ ip address 172.25.10.1 255.255.255.0
+ zone-member security DMZ_FA6528
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 172.25.11.1 255.255.255.0
+ zone-member security Internet_FA6528
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ ip address 172.25.12.1 255.255.255.0
+ zone-member security Trusted_FA6528
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/1
+ ip address 172.25.13.1 255.255.255.0
+ zone-member security Trusted_FA6528
+ duplex auto
+ speed auto
+!
+interface Ethernet1/0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Ethernet1/1/0
+ ip address 172.25.14.1 255.255.255.0
+ zone-member security Guest_FA6528
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^
+This is the motd for ZBF_R_FA6528 ^
+!
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+ transport input ssh
+line vty 5 15
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+ transport input ssh
+!
+!
+!
+end
+

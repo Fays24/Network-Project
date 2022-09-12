@@ -1,0 +1,128 @@
+!
+version 12.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Guelph-FA6528-R2
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA652 password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name FA6528
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+key chain eigrp-key
+ key 1
+  key-string Secret55
+!
+interface FastEthernet0/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet0/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Serial0/0/0
+ ip address 10.150.126.153 255.255.255.240
+ ip authentication mode eigrp 1 md5
+ ip authentication key-chain eigrp 1 eigrp-key
+ clock rate 2000000
+!
+interface Serial0/0/1
+ ip address 10.150.126.137 255.255.255.240
+!
+interface FastEthernet1/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router eigrp 1
+ redistribute rip metric 1544 2000 255 1 1500 
+ network 10.150.126.144 0.0.0.15
+ no auto-summary
+!
+router rip
+ version 2
+ redistribute eigrp 1 metric 1 
+ network 10.0.0.0
+ no auto-summary
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd 
+This is the motd for Guelph-FA6528-R2 
+!
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login
+ transport input ssh
+line vty 5 15
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+ transport input ssh
+!
+!
+!
+end
+

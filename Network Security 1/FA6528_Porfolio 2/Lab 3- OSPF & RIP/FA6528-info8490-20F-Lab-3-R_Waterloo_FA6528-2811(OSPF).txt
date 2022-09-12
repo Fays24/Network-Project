@@ -1,0 +1,111 @@
+!
+version 12.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname R_Waterloo_FA6528
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA6528 password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name google.com
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 172.16.0.1 255.255.255.248
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 172.16.0.9 255.255.255.252
+ ip ospf authentication message-digest
+ ip ospf message-digest-key 1 md5 Secret55
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router ospf 1
+ router-id 1.1.1.1
+ log-adjacency-changes
+ area 0 authentication message-digest
+ passive-interface FastEthernet0/0
+ network 172.16.0.0 0.0.0.7 area 0
+ network 172.16.0.8 0.0.0.3 area 0
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd 
+This is the motd for R_Waterloo_FA6528 
+!
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ logging synchronous
+ login
+ transport input ssh
+line vty 5 15
+ logging synchronous
+ login
+ transport input ssh
+!
+!
+!
+end
+

@@ -1,0 +1,127 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname KITCHENER_FA6528
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA6528 password 7 0812494D1B1C114247
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017S886-
+!
+!
+!
+crypto isakmp policy 1
+ encr aes 256
+ authentication pre-share
+ group 5
+!
+crypto isakmp key Secret55 address 182.16.0.46
+!
+!
+!
+crypto ipsec transform-set WATERLOO_XFORM_FA6528 esp-aes esp-sha-hmac
+!
+crypto map IPSEC_TO_WATERLOO_FA6528 10 ipsec-isakmp 
+ set peer 182.16.0.46
+ set transform-set WATERLOO_XFORM_FA6528 
+ match address ALLOWED_TO_WATERLOO_VPN_FA6528
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name itns-fa6528.local
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 182.16.0.1 255.255.255.248
+ duplex auto
+ speed auto
+ crypto map IPSEC_TO_WATERLOO_FA6528
+!
+interface FastEthernet0/1
+ ip address 182.16.0.9 255.255.255.248
+ duplex auto
+ speed auto
+ crypto map IPSEC_TO_WATERLOO_FA6528
+!
+interface FastEthernet1/0
+ ip address 182.16.0.17 255.255.255.248
+ duplex auto
+ speed auto
+ crypto map IPSEC_TO_WATERLOO_FA6528
+!
+interface FastEthernet1/1
+ ip address 182.16.0.42 255.255.255.252
+ duplex auto
+ speed auto
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip classless
+ip route 0.0.0.0 0.0.0.0 182.16.0.41 
+!
+ip flow-export version 9
+!
+!
+ip access-list extended ALLOWED_TO_WATERLOO_VPN_FA6528
+ permit ip 182.16.0.0 0.0.0.7 182.16.0.24 0.0.0.7
+ permit ip 182.16.0.8 0.0.0.7 182.16.0.24 0.0.0.7
+ permit ip 182.16.0.16 0.0.0.7 182.16.0.24 0.0.0.7
+ permit ip 182.16.0.0 0.0.0.7 182.16.0.32 0.0.0.7
+ permit ip 182.16.0.8 0.0.0.7 182.16.0.32 0.0.0.7
+ permit ip 182.16.0.16 0.0.0.7 182.16.0.32 0.0.0.7
+!
+banner motd ^
+This is the motd for KITCHENER_FA6528 ^
+!
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+line vty 5 15
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+!
+!
+end
+

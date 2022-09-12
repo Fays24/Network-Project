@@ -1,0 +1,112 @@
+!
+version 12.4
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname Spoke-1-FA6528
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA6528 password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name google.com
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+key chain eigrp-key
+ key 1
+  key-string Secret55
+!
+interface FastEthernet0/0
+ ip address 192.168.100.41 255.255.255.248
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 172.100.100.6 255.255.255.252
+ ip authentication mode eigrp 1 md5
+ ip authentication key-chain eigrp 1 eigrp-key
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ ip address 172.100.100.22 255.255.255.252
+ ip authentication mode eigrp 1 md5
+ ip authentication key-chain eigrp 1 eigrp-key
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+router eigrp 1
+ passive-interface FastEthernet0/0
+ network 192.168.100.40 0.0.0.7
+ network 172.100.100.4 0.0.0.3
+ network 172.100.100.20 0.0.0.3
+ no auto-summary
+!
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd 
+This is the motd for Spoke-1-FA6528 
+!
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ logging synchronous
+ login
+line vty 5 15
+ logging synchronous
+ login
+!
+!
+!
+end
+

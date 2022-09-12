@@ -1,0 +1,108 @@
+!
+version 15.1
+no service timestamps log datetime msec
+no service timestamps debug datetime msec
+service password-encryption
+!
+hostname R_Firewall_FA6528
+!
+!
+!
+enable password 7 0812494D1B1C114247
+!
+!
+!
+!
+!
+!
+no ip cef
+no ipv6 cef
+!
+!
+!
+username FA6528 password 7 0812494D1B1C114247
+!
+!
+license udi pid CISCO2811/K9 sn FTX1017JGRS-
+!
+!
+!
+!
+!
+!
+!
+!
+!
+ip ssh version 2
+ip domain-name FA6528
+!
+!
+spanning-tree mode pvst
+!
+!
+!
+!
+!
+!
+interface FastEthernet0/0
+ ip address 172.25.14.1 255.255.255.248
+ ip nat outside
+ duplex auto
+ speed auto
+!
+interface FastEthernet0/1
+ ip address 10.100.140.2 255.255.255.0
+ ip nat inside
+ duplex auto
+ speed auto
+!
+interface FastEthernet1/0
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface FastEthernet1/1
+ no ip address
+ duplex auto
+ speed auto
+ shutdown
+!
+interface Vlan1
+ no ip address
+ shutdown
+!
+ip nat inside source static tcp 10.100.140.11 80 172.25.14.1 80 
+ip classless
+!
+ip flow-export version 9
+!
+!
+!
+banner motd ^
+This is the motd for R_Firewall_FA6528 ^
+!
+!
+!
+!
+!
+line con 0
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+line aux 0
+!
+line vty 0 4
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+line vty 5 15
+ password 7 0812494D1B1C114247
+ logging synchronous
+ login local
+!
+!
+!
+end
+
